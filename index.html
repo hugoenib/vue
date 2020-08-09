@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>VueTest</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+</head>
+
+
+<div id="app">
+    <div class="container">
+        <div class ="row">
+            <p class="jumbotron"> Login: <input type="text" v-model="user"/> | Vous êtes {{user}}
+            </p>
+        </div>
+
+
+        <h1 v-bind:class="affichage">Produits</h1>
+        <div class="row">
+            <ficheproduit v-for="produit in produits" v-bind:nom="produit" v-on:commande_passee="commander" role="commande"></ficheproduit>
+        </div>
+
+        <h1 v-bind:class="affichage" v-if="commandes.length>0">Commande</h1>
+        <div class="row">
+            <ficheproduit v-for="produit in commandes" v-bind:nom="produit" v-on:commande_annule="annuler" role="recap"></ficheproduit>
+        </div>
+    </div>
+
+    <script>
+        Vue.component('ficheproduit',{
+            template:`<div class="col-2">
+                <p class="jumbotron">{{nom}}
+                    <br> <button v-on:click="passer_commander(nom)" v-if="role == 'commande'">Commander</button>
+
+                </p>
+        </div>`,
+            props:['nom','role'],
+            methods: {
+                passer_commander: function (produit) {
+                    this.$emit('commande_passee', produit)
+                }
+            }})
+
+        var app = new Vue({
+            el :"#app",
+            data : {
+                user:"Hugo",
+                produits:["Tomate","salade","glace"],
+                commandes:[],
+                affichage:"display-4"
+            },
+            methods:{
+                commander: function(produit){
+                    console.log(produit);
+                    this.commandes.push(produit)
+                },
+            }
+        })
+    </script>
+</html>
